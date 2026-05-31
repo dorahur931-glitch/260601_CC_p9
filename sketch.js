@@ -187,6 +187,11 @@ function mousePressed() {
   }
 }
 
+function touchStarted() {
+  mousePressed(); // 터치를 클릭으로 처리
+  return false; // 기본 동작 방지
+}
+
 function draw() {
   background(0);
   
