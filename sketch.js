@@ -313,29 +313,12 @@ function draw() {
     return;
   }
 
-  drawNoteOutlines();
   analyzeAndPlayHarmony();
   updateParticles();
   
   image(uiLayer, 0, 0);
 }
-function drawNoteOutlines() {
-  stroke(100, 100, 100, 80);
-  strokeWeight(2);
-  noFill();
-  
-  ellipse(width * 0.05, height * 0.80, 40, 40);
-  ellipse(width * 0.12, height * 0.68, 40, 40);
-  line(width * 0.05, height * 0.42, width * 0.05, height * 0.80);
-  line(width * 0.12, height * 0.32, width * 0.12, height * 0.68);
-  line(width * 0.05, height * 0.42, width * 0.12, height * 0.32);
-  
-  ellipse(width * 0.95, height * 0.80, 40, 40);
-  ellipse(width * 0.88, height * 0.68, 40, 40);
-  line(width * 0.95, height * 0.42, width * 0.95, height * 0.80);
-  line(width * 0.88, height * 0.32, width * 0.88, height * 0.68);
-  line(width * 0.88, height * 0.32, width * 0.95, height * 0.42);
-}
+
 function analyzeAndPlayHarmony() {
   cam.loadPixels();
   
