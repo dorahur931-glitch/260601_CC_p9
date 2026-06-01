@@ -21,7 +21,7 @@ let startTime = 0;
 
 // 파티클 배열
 let particles = [];
-let accumulatedParticles = []; // 바닥에 쌓인 파티클들
+let accumulatedParticles = [];
 
 // 폰트
 let helveticaFont;
@@ -37,121 +37,121 @@ const colorNotes = [
   { name: 'purple', freq: 493.88, hue: [260, 345], rgb: [200, 50, 255], label: 'b' }
 ];
 
-// 🎵 연속된 8분음표 형태 (가로줄로 묶인 형태) 좌표
+// 🎵 연속된 8분음표 형태 (간격 증가 + beam 사선)
 const noteShapeLeft = [];
 const noteShapeRight = [];
 
-// 연속된 8분음표 🎵 형태 생성
+// 연속된 8분음표 🎵 형태 생성 (개선 버전)
 function generateNoteShapes() {
-  // 왼쪽 음표 - 두 개의 8분음표가 가로줄로 연결된 형태
+  // 왼쪽 음표 - 두 음표 간격 증가 + beam 사선
   
   // 첫 번째 음표 머리 (왼쪽 하단)
-  for (let i = 0; i < 100; i++) {
+  for (let i = 0; i < 120; i++) {
     let angle = random(TWO_PI);
-    let radius = random(12, 20);
+    let radius = random(15, 22);
     noteShapeLeft.push({
-      x: 0.06 + cos(angle) * radius / width,
-      y: 0.78 + sin(angle) * radius / height
+      x: 0.05 + cos(angle) * radius / width,
+      y: 0.80 + sin(angle) * radius / height
     });
   }
   
-  // 두 번째 음표 머리 (첫 번째보다 약간 오른쪽, 약간 위)
-  for (let i = 0; i < 100; i++) {
+  // 두 번째 음표 머리 (첫 번째보다 오른쪽 + 위, 간격 증가)
+  for (let i = 0; i < 120; i++) {
     let angle = random(TWO_PI);
-    let radius = random(12, 20);
+    let radius = random(15, 22);
     noteShapeLeft.push({
-      x: 0.10 + cos(angle) * radius / width,
-      y: 0.73 + sin(angle) * radius / height
+      x: 0.12 + cos(angle) * radius / width,  // 0.10 → 0.12 (간격 증가)
+      y: 0.68 + sin(angle) * radius / height  // 0.73 → 0.68 (높이 차이 증가)
     });
   }
   
   // 첫 번째 음표 기둥 (세로선)
-  for (let i = 0; i < 60; i++) {
+  for (let i = 0; i < 70; i++) {
     noteShapeLeft.push({
-      x: 0.06 + random(-2, 2) / width,
-      y: random(0.45, 0.78)
+      x: 0.05 + random(-2, 2) / width,
+      y: random(0.42, 0.80)  // 기둥 길이 증가
     });
   }
   
-  // 두 번째 음표 기둥 (세로선)
-  for (let i = 0; i < 60; i++) {
+  // 두 번째 음표 기둥 (세로선, 더 높음)
+  for (let i = 0; i < 70; i++) {
     noteShapeLeft.push({
-      x: 0.10 + random(-2, 2) / width,
-      y: random(0.40, 0.73)
+      x: 0.12 + random(-2, 2) / width,
+      y: random(0.32, 0.68)  // 0.40 → 0.32 (더 위로)
     });
   }
   
-  // 연결 가로줄 (beam - 두 기둥을 연결)
-  for (let i = 0; i < 50; i++) {
-    let t = i / 50;
+  // 연결 가로줄 (beam - 사선으로 올라감)
+  for (let i = 0; i < 60; i++) {
+    let t = i / 60;
     noteShapeLeft.push({
-      x: 0.06 + t * 0.04,
-      y: 0.42 + random(-2, 2) / height
+      x: 0.05 + t * 0.07,  // 0.04 → 0.07 (폭 증가)
+      y: 0.42 - t * 0.10 + random(-1, 1) / height  // 사선 (왼쪽 낮음 → 오른쪽 높음)
     });
   }
   
   // 깃 부분 (상단 곡선 - 두 번째 음표에서)
-  for (let i = 0; i < 40; i++) {
-    let t = i / 40;
+  for (let i = 0; i < 50; i++) {
+    let t = i / 50;
     noteShapeLeft.push({
-      x: 0.10 + t * 0.03,
-      y: 0.40 - t * 0.08 + sin(t * PI) * 0.015
+      x: 0.12 + t * 0.035,
+      y: 0.32 - t * 0.10 + sin(t * PI) * 0.02
     });
   }
   
-  // 오른쪽 음표 - 대칭 구조
+  // 오른쪽 음표 - 대칭 구조 (간격 증가 + beam 사선)
   
   // 첫 번째 음표 머리 (오른쪽 하단)
-  for (let i = 0; i < 100; i++) {
+  for (let i = 0; i < 120; i++) {
     let angle = random(TWO_PI);
-    let radius = random(12, 20);
+    let radius = random(15, 22);
     noteShapeRight.push({
-      x: 0.94 + cos(angle) * radius / width,
-      y: 0.78 + sin(angle) * radius / height
+      x: 0.95 + cos(angle) * radius / width,
+      y: 0.80 + sin(angle) * radius / height
     });
   }
   
-  // 두 번째 음표 머리 (첫 번째보다 약간 왼쪽, 약간 위)
-  for (let i = 0; i < 100; i++) {
+  // 두 번째 음표 머리 (첫 번째보다 왼쪽 + 위)
+  for (let i = 0; i < 120; i++) {
     let angle = random(TWO_PI);
-    let radius = random(12, 20);
+    let radius = random(15, 22);
     noteShapeRight.push({
-      x: 0.90 + cos(angle) * radius / width,
-      y: 0.73 + sin(angle) * radius / height
+      x: 0.88 + cos(angle) * radius / width,  // 0.90 → 0.88
+      y: 0.68 + sin(angle) * radius / height
     });
   }
   
   // 첫 번째 음표 기둥
-  for (let i = 0; i < 60; i++) {
+  for (let i = 0; i < 70; i++) {
     noteShapeRight.push({
-      x: 0.94 + random(-2, 2) / width,
-      y: random(0.45, 0.78)
+      x: 0.95 + random(-2, 2) / width,
+      y: random(0.42, 0.80)
     });
   }
   
-  // 두 번째 음표 기둥
-  for (let i = 0; i < 60; i++) {
+  // 두 번째 음표 기둥 (더 높음)
+  for (let i = 0; i < 70; i++) {
     noteShapeRight.push({
-      x: 0.90 + random(-2, 2) / width,
-      y: random(0.40, 0.73)
+      x: 0.88 + random(-2, 2) / width,
+      y: random(0.32, 0.68)
     });
   }
   
-  // 연결 가로줄 (beam)
-  for (let i = 0; i < 50; i++) {
-    let t = i / 50;
+  // 연결 가로줄 (beam - 사선)
+  for (let i = 0; i < 60; i++) {
+    let t = i / 60;
     noteShapeRight.push({
-      x: 0.90 + t * 0.04,
-      y: 0.42 + random(-2, 2) / height
+      x: 0.88 + t * 0.07,  // 왼쪽에서 오른쪽으로
+      y: 0.32 + t * 0.10 + random(-1, 1) / height  // 사선 (왼쪽 높음 → 오른쪽 낮음)
     });
   }
   
   // 깃 부분 (상단 곡선)
-  for (let i = 0; i < 40; i++) {
-    let t = i / 40;
+  for (let i = 0; i < 50; i++) {
+    let t = i / 50;
     noteShapeRight.push({
-      x: 0.90 - t * 0.03,
-      y: 0.40 - t * 0.08 + sin(t * PI) * 0.015
+      x: 0.88 - t * 0.035,
+      y: 0.32 - t * 0.10 + sin(t * PI) * 0.02
     });
   }
 }
@@ -159,9 +159,8 @@ function generateNoteShapes() {
 // 파티클 클래스
 class ColorParticle {
   constructor(colorData, intensity, side) {
-    this.side = side; // 'left' or 'right'
+    this.side = side;
     
-    // 양 옆에서만 생성
     if (side === 'left') {
       this.x = random(0, width * 0.2);
     } else {
@@ -190,7 +189,6 @@ class ColorParticle {
     }
     
     if (this.movingToTarget) {
-      // 타겟 위치로 부드럽게 이동
       let dx = this.targetX - this.x;
       let dy = this.targetY - this.y;
       this.x += dx * 0.3;
@@ -211,18 +209,15 @@ class ColorParticle {
       this.y += this.speed;
       this.rotation += this.rotSpeed;
       
-      // 바닥에 닿으면 바운스
       if (this.y >= height - 50) {
         this.bouncing = true;
         this.bounceVelocity = -8;
       }
     } else {
-      // 바운스 물리
       this.bounceVelocity += 0.8;
       this.y += this.bounceVelocity;
       this.rotation += this.rotSpeed * 2;
       
-      // 바운스 정점에서 음표 위치로 이동 시작
       if (this.bounceVelocity > 0 && this.y >= height - 100) {
         this.settleIntoNote();
       }
@@ -232,7 +227,6 @@ class ColorParticle {
   settleIntoNote() {
     this.movingToTarget = true;
     
-    // 음표 모양 위치 선택
     let noteShape = this.side === 'left' ? noteShapeLeft : noteShapeRight;
     
     if (noteShape.length > 0) {
@@ -240,7 +234,6 @@ class ColorParticle {
       this.targetX = targetPos.x * width + random(-5, 5);
       this.targetY = targetPos.y * height + random(-5, 5);
     } else {
-      // fallback
       this.targetX = this.x;
       this.targetY = height - 100;
     }
@@ -281,7 +274,6 @@ function setup() {
   
   textAlign(CENTER, CENTER);
   
-  // 연속된 8분음표 형태 생성
   generateNoteShapes();
 }
 
@@ -379,7 +371,6 @@ function analyzeAndPlayHarmony() {
     total++;
   }
   
-  // 15초 내 완성을 위한 파티클 생성 증가
   let elapsedTime = (millis() - startTime) / 1000;
   let generationMultiplier = elapsedTime < 15 ? 1.5 : 0.3;
   
