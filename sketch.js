@@ -1,5 +1,5 @@
 // =====================================
-// REALTIME COLOR HARMONY FIELD
+// REALTIME COLOR HARMONY FIELD - 21 TONES VERSION
 // p5.js + p5.sound
 //
 // index.html 에 추가:
@@ -19,127 +19,137 @@ let started = false;
 let reverb;
 let startTime = 0;
 
-// 파티클 배열
 let particles = [];
 let accumulatedParticles = [];
 
-// 폰트
 let helveticaFont;
 
-// C Major 7음계와 색상 매핑
+// 21음계 시스템 (C Major + C Minor + Chromatic)
 const colorNotes = [
-  { name: 'red', freq: 261.63, hue: [345, 15], rgb: [255, 50, 50], label: 'c' },
-  { name: 'orange', freq: 293.66, hue: [15, 45], rgb: [255, 165, 50], label: 'd' },
-  { name: 'yellow', freq: 329.63, hue: [45, 70], rgb: [255, 255, 50], label: 'e' },
-  { name: 'green', freq: 349.23, hue: [70, 160], rgb: [50, 255, 50], label: 'f' },
-  { name: 'cyan', freq: 392.00, hue: [160, 200], rgb: [50, 255, 255], label: 'g' },
-  { name: 'blue', freq: 440.00, hue: [200, 260], rgb: [50, 100, 255], label: 'a' },
-  { name: 'purple', freq: 493.88, hue: [260, 345], rgb: [200, 50, 255], label: 'b' }
+  { name: 'red', freq: 261.63, hue: [345, 5], rgb: [255, 0, 0], label: 'C' },
+  { name: 'red-orange1', freq: 277.18, hue: [5, 10], rgb: [255, 64, 0], label: 'C#' },
+  { name: 'red-orange2', freq: 293.66, hue: [10, 15], rgb: [255, 128, 0], label: 'D' },
+  { name: 'orange', freq: 311.13, hue: [15, 30], rgb: [255, 165, 0], label: 'Eb' },
+  { name: 'orange-yellow1', freq: 329.63, hue: [30, 40], rgb: [255, 200, 0], label: 'E' },
+  { name: 'orange-yellow2', freq: 349.23, hue: [40, 50], rgb: [255, 220, 0], label: 'F' },
+  { name: 'yellow', freq: 369.99, hue: [50, 70], rgb: [255, 255, 0], label: 'F#' },
+  { name: 'yellow-green1', freq: 392.00, hue: [70, 80], rgb: [200, 255, 0], label: 'G' },
+  { name: 'yellow-green2', freq: 415.30, hue: [80, 90], rgb: [150, 255, 0], label: 'Ab' },
+  { name: 'green', freq: 440.00, hue: [90, 120], rgb: [0, 255, 0], label: 'A' },
+  { name: 'green-cyan1', freq: 466.16, hue: [120, 140], rgb: [0, 255, 128], label: 'Bb' },
+  { name: 'green-cyan2', freq: 493.88, hue: [140, 160], rgb: [0, 255, 200], label: 'B' },
+  { name: 'cyan', freq: 523.25, hue: [160, 190], rgb: [0, 255, 255], label: 'C2' },
+  { name: 'cyan-blue1', freq: 554.37, hue: [190, 205], rgb: [0, 200, 255], label: 'C#2' },
+  { name: 'cyan-blue2', freq: 587.33, hue: [205, 220], rgb: [0, 150, 255], label: 'D2' },
+  { name: 'blue', freq: 622.25, hue: [220, 250], rgb: [0, 100, 255], label: 'Eb2' },
+  { name: 'blue-purple1', freq: 659.25, hue: [250, 265], rgb: [100, 50, 255], label: 'E2' },
+  { name: 'blue-purple2', freq: 698.46, hue: [265, 280], rgb: [150, 0, 255], label: 'F2' },
+  { name: 'purple', freq: 739.99, hue: [280, 310], rgb: [200, 0, 255], label: 'F#2' },
+  { name: 'purple-red1', freq: 783.99, hue: [310, 327], rgb: [255, 0, 200], label: 'G2' },
+  { name: 'purple-red2', freq: 830.61, hue: [327, 345], rgb: [255, 0, 100], label: 'Ab2' }
 ];
 
-// 🎵 연속된 8분음표 형태 
 const noteShapeLeft = [];
 const noteShapeRight = [];
 
-// 연속된 8분음표 🎵 형태 생성
 function generateNoteShapes() {
-  // 왼쪽 음표 - 두 음표 간격 증가 + beam 사선
-  
-  // 첫 번째 음표 머리 (왼쪽 하단)
-  for (let i = 0; i < 120; i++) {
+  for (let i = 0; i < 150; i++) {
     let angle = random(TWO_PI);
-    let radius = random(15, 22);
+    let radius = random(15, 25);
     noteShapeLeft.push({
       x: 0.05 + cos(angle) * radius / width,
       y: 0.80 + sin(angle) * radius / height
     });
   }
   
-  // 두 번째 음표 머리 (첫 번째보다 오른쪽 + 위, 간격 증가)
-  for (let i = 0; i < 120; i++) {
+  for (let i = 0; i < 150; i++) {
     let angle = random(TWO_PI);
-    let radius = random(15, 22);
+    let radius = random(15, 25);
     noteShapeLeft.push({
-      x: 0.12 + cos(angle) * radius / width,  // 0.10 → 0.12 (간격 증가)
-      y: 0.68 + sin(angle) * radius / height  // 0.73 → 0.68 (높이 차이 증가)
+      x: 0.12 + cos(angle) * radius / width,
+      y: 0.68 + sin(angle) * radius / height
     });
   }
   
-  // 첫 번째 음표 기둥 (세로선)
-  for (let i = 0; i < 70; i++) {
+  for (let i = 0; i < 80; i++) {
     noteShapeLeft.push({
       x: 0.05 + random(-2, 2) / width,
-      y: random(0.42, 0.80)  // 기둥 길이 증가
+      y: random(0.42, 0.80)
     });
   }
   
-  // 두 번째 음표 기둥 (세로선, 더 높음)
-  for (let i = 0; i < 70; i++) {
+  for (let i = 0; i < 80; i++) {
     noteShapeLeft.push({
       x: 0.12 + random(-2, 2) / width,
-      y: random(0.32, 0.68)  // 0.40 → 0.32 (더 위로)
+      y: random(0.32, 0.68)
     });
   }
   
-  // 연결 가로줄 (beam - 사선으로 올라감)
-  for (let i = 0; i < 60; i++) {
-    let t = i / 60;
+  for (let i = 0; i < 70; i++) {
+    let t = i / 70;
     noteShapeLeft.push({
-      x: 0.05 + t * 0.07,  // 0.04 → 0.07 (폭 증가)
-      y: 0.42 - t * 0.10 + random(-1, 1) / height  // 사선 (왼쪽 낮음 → 오른쪽 높음)
+      x: 0.05 + t * 0.07,
+      y: 0.42 - t * 0.10 + random(-1, 1) / height
     });
   }
   
-
-  // 오른쪽 음표 - 대칭 구조 (간격 증가 + beam 사선)
+//   for (let i = 0; i < 60; i++) {
+//     let t = i / 60;
+//     noteShapeLeft.push({
+//       x: 0.12 + t * 0.035,
+//       y: 0.32 - t * 0.10 + sin(t * PI) * 0.02
+//     });
+//   }
   
-  // 첫 번째 음표 머리 (오른쪽 하단)
-  for (let i = 0; i < 120; i++) {
+  for (let i = 0; i < 150; i++) {
     let angle = random(TWO_PI);
-    let radius = random(15, 22);
+    let radius = random(15, 25);
     noteShapeRight.push({
       x: 0.95 + cos(angle) * radius / width,
       y: 0.80 + sin(angle) * radius / height
     });
   }
   
-  // 두 번째 음표 머리 (첫 번째보다 왼쪽 + 위)
-  for (let i = 0; i < 120; i++) {
+  for (let i = 0; i < 150; i++) {
     let angle = random(TWO_PI);
-    let radius = random(15, 22);
+    let radius = random(15, 25);
     noteShapeRight.push({
-      x: 0.88 + cos(angle) * radius / width,  // 0.90 → 0.88
+      x: 0.88 + cos(angle) * radius / width,
       y: 0.68 + sin(angle) * radius / height
     });
   }
   
-  // 첫 번째 음표 기둥
-  for (let i = 0; i < 70; i++) {
+  for (let i = 0; i < 80; i++) {
     noteShapeRight.push({
       x: 0.95 + random(-2, 2) / width,
       y: random(0.42, 0.80)
     });
   }
   
-  // 두 번째 음표 기둥 (더 높음)
-  for (let i = 0; i < 70; i++) {
+  for (let i = 0; i < 80; i++) {
     noteShapeRight.push({
       x: 0.88 + random(-2, 2) / width,
       y: random(0.32, 0.68)
     });
   }
   
-  // 연결 가로줄 (beam - 사선)
-  for (let i = 0; i < 60; i++) {
-    let t = i / 60;
+  for (let i = 0; i < 70; i++) {
+    let t = i / 70;
     noteShapeRight.push({
-      x: 0.88 + t * 0.07,  // 왼쪽에서 오른쪽으로
-      y: 0.32 + t * 0.10 + random(-1, 1) / height  // 사선 (왼쪽 높음 → 오른쪽 낮음)
+      x: 0.88 + t * 0.07,
+      y: 0.32 + t * 0.10 + random(-1, 1) / height
     });
   }
+  
+  // for (let i = 0; i < 60; i++) {
+  //   let t = i / 60;
+  //   noteShapeRight.push({
+  //     x: 0.88 - t * 0.035,
+  //     y: 0.32 - t * 0.10 + sin(t * PI) * 0.02
+  //   });
+  // }
 }
 
-// 파티클 클래스
 class ColorParticle {
   constructor(colorData, intensity, side) {
     this.side = side;
@@ -154,7 +164,7 @@ class ColorParticle {
     this.speed = map(intensity, 0, 1, 6, 15);
     this.color = colorData.rgb;
     this.label = colorData.label;
-    this.size = map(intensity, 0, 1, 10, 22.5);
+    this.size = map(intensity, 0, 1, 8, 20);
     this.alpha = 255;
     this.rotation = random(-0.2, 0.2);
     this.rotSpeed = random(-0.05, 0.05);
@@ -312,7 +322,7 @@ function draw() {
     text("CLICK OR TAP TO START", width / 2, height / 2);
     return;
   }
-
+  
   analyzeAndPlayHarmony();
   updateParticles();
   
@@ -331,7 +341,7 @@ function analyzeAndPlayHarmony() {
   
   let total = 0;
   
-  for (let i = 0; i < cam.pixels.length; i += 80) {
+  for (let i = 0; i < cam.pixels.length; i += 40) {
     let r = cam.pixels[i];
     let g = cam.pixels[i + 1];
     let b = cam.pixels[i + 2];
@@ -354,21 +364,23 @@ function analyzeAndPlayHarmony() {
     total++;
   }
   
+  // 20초 이후에도 계속 파티클 생성 (배율만 낮춤)
   let elapsedTime = (millis() - startTime) / 1000;
-  let generationMultiplier = elapsedTime < 15 ? 1.5 : 0.3;
+  let generationMultiplier = elapsedTime < 20 ? 1.2 : 0.6;  
   
   for (let i = 0; i < soundPlayers.length; i++) {
     let colorName = soundPlayers[i].colorData.name;
     let ratio = colorAmount[colorName] / total;
     
-    let targetAmp = map(ratio, 0, 0.35, 0, 0.4, true);
+    let targetAmp = map(ratio, 0, 0.25, 0, 0.35, true);
     soundPlayers[i].osc.amp(targetAmp, 0.2);
     
-    if (ratio > 0.02) {
-      let particleCount = floor(map(ratio, 0.02, 0.35, 1, 4, true) * generationMultiplier);
+    // ⭐ 수정: 파티클 계속 생성
+    if (ratio > 0.015) {
+      let particleCount = floor(map(ratio, 0.015, 0.25, 0.5, 3, true) * generationMultiplier);
       for (let p = 0; p < particleCount; p++) {
-        if (random() < 0.5) {
-          let intensity = map(ratio, 0.02, 0.35, 0.3, 1, true);
+        if (random() < 0.4) {
+          let intensity = map(ratio, 0.015, 0.25, 0.3, 1, true);
           let side = random() < 0.5 ? 'left' : 'right';
           particles.push(new ColorParticle(soundPlayers[i].colorData, intensity, side));
         }
@@ -382,7 +394,6 @@ function analyzeAndPlayHarmony() {
 function updateParticles() {
   uiLayer.clear();
   
-  // 쌓인 파티클 먼저 표시
   for (let i = 0; i < accumulatedParticles.length; i++) {
     uiLayer.push();
     uiLayer.translate(accumulatedParticles[i].x, accumulatedParticles[i].y);
@@ -394,7 +405,6 @@ function updateParticles() {
     uiLayer.pop();
   }
   
-  // 떨어지는 파티클 업데이트 및 표시
   for (let i = particles.length - 1; i >= 0; i--) {
     particles[i].update();
     
