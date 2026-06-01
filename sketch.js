@@ -37,11 +37,11 @@ const colorNotes = [
   { name: 'purple', freq: 493.88, hue: [260, 345], rgb: [200, 50, 255], label: 'b' }
 ];
 
-// 🎵 연속된 8분음표 형태 (간격 증가 + beam 사선)
+// 🎵 연속된 8분음표 형태 
 const noteShapeLeft = [];
 const noteShapeRight = [];
 
-// 연속된 8분음표 🎵 형태 생성 (개선 버전)
+// 연속된 8분음표 🎵 형태 생성
 function generateNoteShapes() {
   // 왼쪽 음표 - 두 음표 간격 증가 + beam 사선
   
@@ -377,40 +377,6 @@ function analyzeAndPlayHarmony() {
     
     soundPlayers[i].currentAmp = targetAmp;
   }
-  if (started) {
-    drawNoteOutlines();
-  }
-  
-  analyzeAndPlayHarmony();
-  updateParticles();
-  
-  image(uiLayer, 0, 0);
-}
-
-// 음표 테두리 그리기 함수
-function drawNoteOutlines() {
-  stroke(100, 100, 100, 80); // 회색 반투명
-  strokeWeight(2);
-  noFill();
-  
-  // 왼쪽 음표 테두리
-  // 첫 번째 음표 머리
-  ellipse(width * 0.05, height * 0.80, 40, 40);
-  // 두 번째 음표 머리
-  ellipse(width * 0.12, height * 0.68, 40, 40);
-  // 기둥들
-  line(width * 0.05, height * 0.42, width * 0.05, height * 0.80);
-  line(width * 0.12, height * 0.32, width * 0.12, height * 0.68);
-  // Beam (사선)
-  line(width * 0.05, height * 0.42, width * 0.12, height * 0.32);
-  
-  // 오른쪽 음표 테두리 (대칭)
-  ellipse(width * 0.95, height * 0.80, 40, 40);
-  ellipse(width * 0.88, height * 0.68, 40, 40);
-  line(width * 0.95, height * 0.42, width * 0.95, height * 0.80);
-  line(width * 0.88, height * 0.32, width * 0.88, height * 0.68);
-  line(width * 0.88, height * 0.32, width * 0.95, height * 0.42);
-}
 }
 
 function updateParticles() {
