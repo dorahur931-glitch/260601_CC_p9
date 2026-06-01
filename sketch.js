@@ -90,15 +90,7 @@ function generateNoteShapes() {
     });
   }
   
-  // 깃 부분 (상단 곡선 - 두 번째 음표에서)
-  for (let i = 0; i < 50; i++) {
-    let t = i / 50;
-    noteShapeLeft.push({
-      x: 0.12 + t * 0.035,
-      y: 0.32 - t * 0.10 + sin(t * PI) * 0.02
-    });
-  }
-  
+
   // 오른쪽 음표 - 대칭 구조 (간격 증가 + beam 사선)
   
   // 첫 번째 음표 머리 (오른쪽 하단)
