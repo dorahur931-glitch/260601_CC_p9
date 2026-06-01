@@ -138,15 +138,6 @@ function generateNoteShapes() {
     });
   }
   
-  // 깃 부분 (상단 곡선)
-  for (let i = 0; i < 50; i++) {
-    let t = i / 50;
-    noteShapeRight.push({
-      x: 0.88 - t * 0.035,
-      y: 0.32 - t * 0.10 + sin(t * PI) * 0.02
-    });
-  }
-}
 
 // 파티클 클래스
 class ColorParticle {
