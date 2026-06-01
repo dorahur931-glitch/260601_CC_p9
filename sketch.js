@@ -137,7 +137,7 @@ function generateNoteShapes() {
       y: 0.32 + t * 0.10 + random(-1, 1) / height  // 사선 (왼쪽 높음 → 오른쪽 낮음)
     });
   }
-  
+}
 
 // 파티클 클래스
 class ColorParticle {
